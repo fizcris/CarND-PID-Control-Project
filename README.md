@@ -2,21 +2,34 @@
 Self-Driving Car Engineer Nanodegree Program
 
 ---
+## Parts of a PID controller
 
-(Images from [MIT video](https://youtu.be/4Y7zG48uHRo))
+### **P** - The proportional part
+
+The proportional part acts on the current error. So this tends to overshot the system response and leads to unstoble systems quite easyly when the undamped region is crosed.
+
+### **I** - The Integral part
+The inegral part of the controler removes steady state errors or errors made by disturbances. Basically sums up the previous errors to act acordingly. It is advised to ramp up this parameter for highly noisy systems or when errros against the set point are quite low.
+### **D** - The derivative part
+The derivate part of the controler acts on the `direction` of the error, so it basically tries to dampen the Proportional part by achieving faster settling times or reducing overshoot.
+
 ## Feedback signal
+(Images from [MIT video](https://youtu.be/4Y7zG48uHRo))
 
-The **cross-track error** is the source error of the PID controllers.
+The **cross-track error** is the source error of the PID controllers used in this project.
 
 For the main PID controller, the output is the steering angle. The `reference` for this controller is `0`, as we aim to always stay at the center of the line.
 
-Another PID controller was implemented for the speed, this controller was implemented in a slightly different way to slow down the vehicle in tricky situations being the speed output calculated as `throttle = setSpeed - abs(PID_output)` 
+Another PID controller was implemented for the speed, this controller was coded in a slightly different way to slow down the vehicle in tricky situations being the speed output calculated as `throttle = setSpeed - abs(PID_output)` 
 
 
 ![](res/2021-07-22-10-11-26.png)
 
+## Tunning procedure
 
-### P controller
+The tunnning procedure followed the steps explained below, basically we hand tuned the parameters starting with a **P** controller, then we moved to a **PD** controller to finally end with a **PID** controller:
+### **P controller - steering**
+
 
 **Tunning:** Ramp up P gain until the system becomes marginally stable. For this plant around 0.12. 
 Too high gains lead to unstable systems when the error is significant.
@@ -32,8 +45,8 @@ Too high gains lead to unstable systems when the error is significant.
     </tr>
 </table>
 
-### PD controller
-**Tunning:** Once P controller is marginally stable ramp up D controller.
+### **PD controller - steering**
+**Tunning:** Once P controller is marginally stable ramp up D controller until the oscillations start to become large, then fine tue around that area.
 
 
 <table>
@@ -48,7 +61,10 @@ Too high gains lead to unstable systems when the error is significant.
 </table>
 
 
-## PID controller
+## **PID controller - steering**
+**Tunning:** Add a bit of Integral term to help the system to return to center abit better after and during bends. Too high integral terms then to make the system unstable and the gains with this term are quite marginal.
+
+
 
 <table>
     <tr>
@@ -61,7 +77,11 @@ Too high gains lead to unstable systems when the error is significant.
     </tr>
 </table>
 
-
+## **PD controller - speed**
+In parallel to the steering controller a speed PD controller has been added.It basically slows down the vehicle when big oscillations start to occurr to avoid making an unstable system that goes off track. 
+***
+***
+# PID modifications
 ## Anti Windup
 
 Although it is highly unlikely we enter in windup situations in this particular controller it is always nice to implement anti-windup methods to saturate the integral part and the output.
@@ -96,9 +116,6 @@ void SetOutputLimits(double Min, double Max)
 }
 ```
 
-
-
-## Twiddle
 
 ## Dependencies
 
