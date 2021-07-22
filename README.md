@@ -18,6 +18,9 @@ Another PID controller was implemented for the speed, this controller was implem
 
 ### P controller
 
+**Tunning:** Ramp up P gain until the system becomes marginally stable. For this plant around 0.12. 
+Too high gains lead to unstable systems when the error is significant.
+
 <table>
     <tr>
         <td>
@@ -30,6 +33,8 @@ Another PID controller was implemented for the speed, this controller was implem
 </table>
 
 ### PD controller
+**Tunning:** Once P controller is marginally stable ramp up D controller.
+
 
 <table>
     <tr>
