@@ -35,11 +35,11 @@ int main() {
 
   PID pid;
   PID pid_speed;
-  /**
-   * TODO: Initialize the pid variable.
-   */
-  pid.Init(0.1,0.001,3);
-  pid_speed.Init(0.1,0.001,3);
+  
+  //Initialize the pid variable.
+  //remember the steering value is [-1, 1].
+  pid.Init(0.1, 0.001, 3, 1 ,-1);
+  pid_speed.Init(0.1, 0.001, 3, 0.3, -0.3);
 
   h.onMessage([&pid,&pid_speed](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
@@ -57,22 +57,17 @@ int main() {
         if (event == "telemetry") {
           // j[1] is the data JSON object
           double cte = std::stod(j[1]["cte"].get<string>());
-          double speed = std::stod(j[1]["speed"].get<string>());
+          double speed = std::stod(j[1]["speed"].get<string>());  
           double angle = std::stod(j[1]["steering_angle"].get<string>());
           double steer_value;
           double throttle;
 
-          pid.UpdateError(cte);
+          pid.UpdateError(0-cte);
           pid_speed.UpdateError(cte);
-          steer_value = -1*pid.TotalError();
-          throttle = 1-abs(pid_speed.TotalError());
-          /**
-           * TODO: Calculate steering value here, remember the steering value is
-           *   [-1, 1].
-           * NOTE: Feel free to play around with the throttle and speed.
-           *   Maybe use another PID controller to control the speed!
-           */
-          
+
+          steer_value = pid.TotalError();
+          throttle = 0.3-abs(pid_speed.TotalError());
+          //throttle = 0.3;
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
                     << std::endl;

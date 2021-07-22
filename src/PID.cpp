@@ -1,17 +1,12 @@
 #include "PID.h"
-
-/**
- * TODO: Complete the PID class. You may add any additional desired functions.
- */
+#include <iostream>
 
 PID::PID() {}
 
 PID::~PID() {}
 
-void PID::Init(double Kp_, double Ki_, double Kd_) {
-  /**
-   * TODO: Initialize PID coefficients (and errors, if needed)
-   */
+void PID::Init(double Kp_, double Ki_, double Kd_, double _outMax, double _outMin) {
+
   Kp = Kp_;
   Ki = Ki_;
   Kd = Kd_;
@@ -20,22 +15,34 @@ void PID::Init(double Kp_, double Ki_, double Kd_) {
   i_error= 0;
   d_error= 0;
 
-
+  outMax = _outMax;
+  outMin = _outMin;
 }
 
 void PID::UpdateError(double cte) {
-  /**
-   * TODO: Update PID errors based on cte.
-   */
-  d_error= cte-p_error;
+
+  d_error= cte - p_error;
   p_error = cte;
-  i_error += p_error;
+  i_error += cte;
 
 }
 
 double PID::TotalError() {
-  /**
-   * TODO: Calculate and return the total error
-   */
-  return Kp*p_error + Ki * i_error + Kd * d_error ;  // TODO: Add your total error calc here!
+  // Compute integral term
+  double int_term = Ki * i_error;
+
+  // Check integral + antiwindup
+  if(int_term> outMax) int_term = Ki * outMax;
+  else if(int_term< outMin) int_term= Ki * outMin;
+
+  // Compute output
+  double sol = Kp*p_error + int_term + Kd * d_error ; 
+
+  //Sateurate  output
+  if(sol> outMax) sol= outMax;
+  else if(sol< outMin) sol= outMin;
+
+  std::cout << "P: " << Kp*p_error <<  "  I: " << int_term << "  D: " << Kd*d_error << std::endl;
+
+  return sol;
 }

@@ -17,7 +17,7 @@ class PID {
    * Initialize PID.
    * @param (Kp_, Ki_, Kd_) The initial PID coefficients
    */
-  void Init(double Kp_, double Ki_, double Kd_);
+  void Init(double Kp_, double Ki_, double Kd_, double _outMax, double _outMin);
 
   /**
    * Update the PID error variables given cross track error.
@@ -31,6 +31,11 @@ class PID {
    */
   double TotalError();
 
+  /**
+   * Check steering limits.
+   */
+  double checkLimits();
+
  private:
   /**
    * PID Errors
@@ -38,6 +43,12 @@ class PID {
   double p_error;
   double i_error;
   double d_error;
+
+    /**
+   * Limits
+   */
+  double outMax;
+  double outMin;
 
   /**
    * PID Coefficients
