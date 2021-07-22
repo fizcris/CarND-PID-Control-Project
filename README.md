@@ -78,7 +78,7 @@ Too high gains lead to unstable systems when the error is significant.
 </table>
 
 ### **PD controller - speed**
-In parallel to the steering controller a speed PD controller has been added.It basically slows down the vehicle when big oscillations start to occurr to avoid making an unstable system that goes off track. 
+In parallel to the steering controller a speed PD controller has been added.It basically slows down the vehicle when big oscillations start to occurr to avoid making an unstable system that goes off track. This controller is multiplied then by the speed so the effect of it changes depending on the speed of the vehicle as well as the cross track error.
 ***
 ***
 ## **PID modifications**
