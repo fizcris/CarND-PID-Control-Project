@@ -2,18 +2,18 @@
 Self-Driving Car Engineer Nanodegree Program
 
 ---
-## Parts of a PID controller
+## **Parts of a PID controller**
 
 ### **P** - The proportional part
 
-The proportional part acts on the current error. So this tends to overshot the system response and leads to unstoble systems quite easyly when the undamped region is crosed.
+The proportional part acts on the current error. So this tends to overshoot the system response and leads to unstable systems quite easily when the undamped region is crossed.
 
 ### **I** - The Integral part
-The inegral part of the controler removes steady state errors or errors made by disturbances. Basically sums up the previous errors to act acordingly. It is advised to ramp up this parameter for highly noisy systems or when errros against the set point are quite low.
+The integral part of the controller removes steady-state errors or errors made by disturbances. Basically sums up the previous errors to act accordingly. It is advised to ramp up this parameter for highly noisy systems or when errors against the setpoint are quite low.
 ### **D** - The derivative part
-The derivate part of the controler acts on the `direction` of the error, so it basically tries to dampen the Proportional part by achieving faster settling times or reducing overshoot.
+The derivate part of the controller acts on the `direction` of the error, so it basically tries to dampen the Proportional part by achieving faster settling times or reducing overshoot.
 
-## Feedback signal
+## **Feedback signal**
 (Images from [MIT video](https://youtu.be/4Y7zG48uHRo))
 
 The **cross-track error** is the source error of the PID controllers used in this project.
@@ -25,7 +25,7 @@ Another PID controller was implemented for the speed, this controller was coded 
 
 ![](res/2021-07-22-10-11-26.png)
 
-## Tunning procedure
+## **Tunning procedure**
 
 The tunnning procedure followed the steps explained below, basically we hand tuned the parameters starting with a **P** controller, then we moved to a **PD** controller to finally end with a **PID** controller:
 ### **P controller - steering**
@@ -61,7 +61,7 @@ Too high gains lead to unstable systems when the error is significant.
 </table>
 
 
-## **PID controller - steering**
+### **PID controller - steering**
 **Tunning:** Add a bit of Integral term to help the system to return to center abit better after and during bends. Too high integral terms then to make the system unstable and the gains with this term are quite marginal.
 
 
@@ -77,12 +77,12 @@ Too high gains lead to unstable systems when the error is significant.
     </tr>
 </table>
 
-## **PD controller - speed**
+### **PD controller - speed**
 In parallel to the steering controller a speed PD controller has been added.It basically slows down the vehicle when big oscillations start to occurr to avoid making an unstable system that goes off track. 
 ***
 ***
-# PID modifications
-## Anti Windup
+## **PID modifications**
+### **Anti Windup & output saturation**
 
 Although it is highly unlikely we enter in windup situations in this particular controller it is always nice to implement anti-windup methods to saturate the integral part and the output.
 
@@ -115,6 +115,38 @@ void SetOutputLimits(double Min, double Max)
    else if(ITerm< outMin) ITerm= outMin;
 }
 ```
+
+## **Twiddle** (coordinate ascent)
+The implementation of the algorithm is stated below although it was not applied to this project, as it is thought that more modern controllers as MPC are better suited for this specific purpose. 
+
+Nonetheless, this algorithm can be very useful to tune any kind of PID, especially when high accuracy and fast responses are required.
+
+```
+ while sum(dp) > tolerance:
+        for i in range(len(p)):
+            p[i] += dp[i]
+
+            # test modified controller with pant
+            # Obtain error (err)
+
+            # If it gives good result keep increasing 
+            if err  <  best_err: 
+                best_err = err
+                dp[i] *=1.1
+            # If results are not good --> Decrease
+            else:
+                p[i] -= 2*dp[i]
+                # test modified controller with pant
+                # Obtain error
+                if err  <  best_err:
+                    best_err = err
+                    dp[i] *=1.1
+            # If the results are always worse, try smaller parameters 
+                else:
+                    p[i] += dp[i]
+                    dp[i] *=0.9
+```
+
 
 
 ## Dependencies
