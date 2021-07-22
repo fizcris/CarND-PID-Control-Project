@@ -3,9 +3,95 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
-## PID explained
+(Images from [MIT video](https://youtu.be/4Y7zG48uHRo))
+## Feedback signal
+
+The **cross-track error** is the source error of the PID controllers.
+
+For the main PID controller, the output is the steering angle. The `reference` for this controller is `0`, as we aim to always stay at the center of the line.
+
+Another PID controller was implemented for the speed, this controller was implemented in a slightly different way to slow down the vehicle in tricky situations being the speed output calculated as `throttle = setSpeed - abs(PID_output)` 
+
+
+![](res/2021-07-22-10-11-26.png)
+
+
+### P controller
+
+<table>
+    <tr>
+        <td>
+            <img src="res/2021-07-22-10-04-19.png" alt="cal_images" width="500" />
+        </td>
+        <td>
+            <img src="res/2021-07-22-10-05-09.png" alt="und_cal_images" width="500" />
+        </td>
+    </tr>
+</table>
+
+### PD controller
+
+<table>
+    <tr>
+        <td>
+            <img src="res/2021-07-22-10-06-38.png" alt="cal_images" width="500" />
+        </td>
+        <td>
+            <img src="res/2021-07-22-10-07-24.png" alt="und_cal_images" width="500" />
+        </td>
+    </tr>
+</table>
+
+
+## PID controller
+
+<table>
+    <tr>
+        <td>
+            <img src="res/2021-07-22-10-09-30.png" alt="cal_images" width="500" />
+        </td>
+        <td>
+            <img src="res/2021-07-22-10-10-35.png" alt="und_cal_images" width="500" />
+        </td>
+    </tr>
+</table>
+
 
 ## Anti Windup
+
+Although it is highly unlikely we enter in windup situations in this particular controller it is always nice to implement anti-windup methods to saturate the integral part and the output.
+
+The images and code below were obtained from [here](http://brettbeauregard.com/blog/2011/04/improving-the-beginner%E2%80%99s-pid-reset-windup/) they are pretty well self-explanatory.
+
+<table>
+    <tr>
+        <td>
+            <img src="res/2021-07-22-10-16-09.png" alt="cal_images" width="500" />
+        </td>
+        <td>
+            <img src="res/2021-07-22-10-16-32.png" alt="und_cal_images" width="500" />
+        </td>
+    </tr>
+</table>
+
+The implementation looks like this: 
+
+```
+void SetOutputLimits(double Min, double Max)
+{
+   if(Min > Max) return;
+   outMin = Min;
+   outMax = Max;
+    
+   if(Output > outMax) Output = outMax;
+   else if(Output < outMin) Output = outMin;
+ 
+   if(ITerm> outMax) ITerm= outMax;
+   else if(ITerm< outMin) ITerm= outMin;
+}
+```
+
+
 
 ## Twiddle
 
