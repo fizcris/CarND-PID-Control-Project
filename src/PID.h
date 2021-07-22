@@ -36,7 +36,13 @@ class PID {
    */
   double checkLimits();
 
+
+
  private:
+     /**
+   * Initial Step.
+   */
+  bool initialStep;
   /**
    * PID Errors
    */
