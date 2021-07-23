@@ -147,7 +147,10 @@ Nonetheless, this algorithm can be very useful to tune any kind of PID, especial
                     dp[i] *=0.9
 ```
 
-
+## Feedback
+* [PID tunning loop](https://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops)
+* [Twiddle](https://martin-thoma.com/twiddle/)
+* [Tunning tip CarND PID](https://seokleeus.github.io/PID-controller/)
 
 ## Dependencies
 
